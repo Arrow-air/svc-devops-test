@@ -10,6 +10,9 @@ on:
       - 'main'
       - 'develop'
 
+permissions:
+  contents: write
+
 jobs:
   autosquash:
     name: Autosquash
@@ -29,6 +32,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
+          token: ${{ secrets.COMMITBOT_GITHUB_TOKEN }}
           ref: ${{ github.head_ref }}
           #persist-credentials: false
           fetch-depth: 0
@@ -36,6 +40,8 @@ jobs:
       - name: Automatic Rebase Autosquash
         run: |
           #git remote set-url origin https://${{ secrets.COMMITBOT_GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          cat .git/config
+          echo "$(cat .git/config)"
           git rebase -i --autosquash origin/${{ github.base_ref }}
           git push -f
         env:
